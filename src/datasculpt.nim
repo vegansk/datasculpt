@@ -1,0 +1,1 @@
+proc testData*(): string = "HW"
