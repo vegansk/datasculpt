@@ -32,7 +32,10 @@ proc test(name: string) =
   if not dirExists "bin_tests":
     mkDir "bin_tests"
   --run
-  buildBase true, "bin_tests/" & name, "tests/" & name
+  buildBase true, "bin_tests/test_" & name, "tests/test_" & name
 
-task test, "Test application":
+task test, "Run all tests":
   test "all"
+
+task dsl, "Run dsl tests":
+  test "dsl"
