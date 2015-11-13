@@ -4,7 +4,9 @@ import datasculpt/dsl
 defStruct TestData:
   x: int
   y: string
-  z: option[seq[int]]
+  ## `x` is `x`
+  z1: option[int]
+  z2: option[seq[int]]
 
 suite "DSL":
 
