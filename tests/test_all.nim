@@ -1,8 +1,2 @@
 import unittest
-import datasculpt
-
-suite "Test":
-
-  test "Hw":
-
-    check testData() == "HW"
+import test_dsl, test_model

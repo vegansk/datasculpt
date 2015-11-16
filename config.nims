@@ -39,3 +39,6 @@ task test, "Run all tests":
 
 task dsl, "Run dsl tests":
   test "dsl"
+
+task model, "Run model tests":
+  test "model"
