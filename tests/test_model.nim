@@ -23,3 +23,9 @@ suite "Model":
   test "Model's debug output":
     let m = struct("TestStruct", @[field("x", simpleType"int"), field("y", complexType("seq", simpleType"int"))])
     echo m
+
+  test "Repository":
+    let m = struct("TestStruct", @[field("x", simpleType"int"), field("y", complexType("seq", simpleType"int"))])
+    let r = newRepository()
+    r.add(m)
+    echo r

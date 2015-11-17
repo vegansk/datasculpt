@@ -6,4 +6,4 @@ description   = "Data structure description language"
 license       = "MIT"
 
 [Deps]
-Requires: "nim >= 0.12.1"
+Requires: "nim >= 0.12.1, https://github.com/vegansk/nimfp#master"

@@ -6,7 +6,7 @@ description   = "Data structure description language"
 license       = "MIT"
 srcdir        = "src"
 
-requires "nim >= 0.12.1"
+requires "nim >= 0.12.1", "https://github.com/vegansk/nimfp#master"
 
 proc buildBase(debug = true, bin: string, src: string) =
   switch("out", (thisDir() & "/" & bin).toExe)

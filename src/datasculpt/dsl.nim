@@ -1,4 +1,4 @@
-import macros, fp/option
+import macros, fp/option, model
 
 proc parseType(t: expr): expr
 
@@ -68,4 +68,5 @@ proc parseStruct(name: expr, body: expr): expr =
       error "Unknown node kind: " & $n.kind
 
 macro defStruct*(name: expr, body: expr): stmt =
+  ## Create structure definition
   parseStruct(name, body)

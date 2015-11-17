@@ -1,4 +1,4 @@
-import sequtils
+import sequtils, tables, fp/option
 
 type
   TypeKind* = enum
@@ -18,6 +18,8 @@ type
   Struct* = ref object
     name*: string
     fields*: Fields
+  RepositoryObj = Table[string, Struct]
+  Repository* = ref RepositoryObj
 
 ####################################################################################################
 # Type
@@ -87,3 +89,19 @@ proc `==`*(x, y: Struct): bool =
 proc `$`*(s: Struct): string =
   s.name & "(" & $(s.fields) & ")"
   
+####################################################################################################
+# Repository
+
+proc newRepository*(): Repository =
+  new result
+  result[] = initTable[string, Struct]()
+
+proc add*(r: Repository, s: Struct): Repository {.discardable.}=
+  r[s.name] = s
+  r
+
+proc get*(r: Repository, name: string): Option[Struct] =
+  if r.hasKey name: r[name].some else: Struct.none
+
+proc `$`*(r: Repository): string =
+  $(r[])
