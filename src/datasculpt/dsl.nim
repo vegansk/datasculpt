@@ -1,7 +1,8 @@
 import macros, fp/option
 
-proc defType(t: expr): untyped
-proc parseTypeFromBrackets(t: expr): untyped =
+proc parseType(t: expr): expr
+
+proc parseTypeFromBrackets(t: expr): expr =
   expectKind t, nnkBracketExpr
   expectLen t, 2
   expectKind t[0], nnkIdent
@@ -17,7 +18,7 @@ proc parseTypeFromBrackets(t: expr): untyped =
   else:
     error "Unknown bracket body kind: " & $t[1].kind
 
-proc defType(t: expr): untyped =
+proc parseType(t: expr): expr =
   expectKind t, nnkStmtList
   let b = t.toStrLit
   case t[0].kind
@@ -30,7 +31,7 @@ proc defType(t: expr): untyped =
   else:
     error "Unknown type's node kind: " & $t[0].kind
 
-proc defField(f: expr, desc: Option[string]): untyped =
+proc parseField(f: expr, desc: Option[string]): expr =
   expectKind f, nnkCall
   expectLen f, 2
   if f[0].kind notin {nnkIdent, nnkAccQuoted}:
@@ -42,14 +43,14 @@ proc defField(f: expr, desc: Option[string]): untyped =
   let c = desc.getOrElse("")
   result = quote do:
     echo "   Field: " & `name` & ", comment: " & `c`
-  result.add(defType f[1])
+  result.add(parseType f[1])
 
 proc parseComment(c: NimNode): Option[string] =
   # TODO: Read the comments from the source
   # http://forum.nim-lang.org/t/1808
   "TODO: Read the comments from the source".some
 
-macro defStruct*(name: expr, body: expr): stmt =
+proc parseStruct(name: expr, body: expr): expr =
   let n = name.toStrLit
   let b = body.toStrLit
   expectKind body, nnkStmtList
@@ -59,9 +60,12 @@ macro defStruct*(name: expr, body: expr): stmt =
   for n in body.children:
     case n.kind
     of nnkCall:
-      result.add(defField(n, comment))
+      result.add(parseField(n, comment))
       comment = string.none
     of nnkCommentStmt:
       comment = parseComment(n)
     else:
       error "Unknown node kind: " & $n.kind
+
+macro defStruct*(name: expr, body: expr): stmt =
+  parseStruct(name, body)
