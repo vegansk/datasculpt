@@ -33,9 +33,12 @@ proc defType(t: expr): untyped =
 proc defField(f: expr, desc: Option[string]): untyped =
   expectKind f, nnkCall
   expectLen f, 2
-  expectKind f[0], nnkIdent
+  if f[0].kind notin {nnkIdent, nnkAccQuoted}:
+    error("Expected a node of kind nnkIdent or nnkAccQuoted, got " & $f[0].kind)
 
-  let name = f[0].toStrLit
+  let i = if f[0].kind == nnkAccQuoted: f[0][0] else: f[0]
+
+  let name = i.toStrLit
   let c = desc.getOrElse("")
   result = quote do:
     echo "   Field: " & `name` & ", comment: " & `c`
@@ -43,6 +46,7 @@ proc defField(f: expr, desc: Option[string]): untyped =
 
 proc parseComment(c: NimNode): Option[string] =
   # TODO: Read the comments from the source
+  # http://forum.nim-lang.org/t/1808
   "TODO: Read the comments from the source".some
 
 macro defStruct*(name: expr, body: expr): stmt =

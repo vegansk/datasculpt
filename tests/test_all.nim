@@ -1,2 +1,2 @@
 import unittest
-import test_dsl, test_model
+import test_model, test_dsl
