@@ -22,6 +22,7 @@ proc buildBase(debug = true, bin: string, src: string) =
     --linedir: on
     --stacktrace: on
     --linetrace: on
+    --verbosity: 2
 
     --NimblePath: src
     --NimblePath: srcdir

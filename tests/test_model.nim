@@ -19,3 +19,7 @@ suite "Model":
       ) == Struct(name: "TestStruct",
                   fields: @[field("x", simpleType"int"), field("y", complexType("seq", simpleType"int"))]
       )
+
+  test "Model's debug output":
+    let m = struct("TestStruct", @[field("x", simpleType"int"), field("y", complexType("seq", simpleType"int"))])
+    echo m

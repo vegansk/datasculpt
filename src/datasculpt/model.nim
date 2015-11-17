@@ -1,3 +1,5 @@
+import sequtils
+
 type
   TypeKind* = enum
     tkSimple,
@@ -36,6 +38,13 @@ proc `==`*(x,  y: Type): bool =
   else:
     x.kind == y.kind
 
+proc `$`*(t: Type): string =
+  case t.kind
+  of tkSimple:
+    t.name
+  of tkComposite:
+    t.name & "[" & $t.param & "]"
+
 ####################################################################################################
 # Field
 
@@ -46,6 +55,26 @@ proc field*(name: string, `type`: Type): Field =
 proc `==`*(x, y: Field): bool =
   x.name == y.name and x.`type` == y.`type`
 
+proc `$`*(f: Field): string =
+  f.name & ": " & $f.`type`
+
+####################################################################################################
+# Fields
+
+# TODO: Wait for the issue https://github.com/nim-lang/Nim/issues/3549 to resolve
+# proc `$`(f: Fields): string =
+#   let m: seq[string] = mapIt(f, $(it.Field))
+#   m.foldl(a & ", " & b)
+
+proc `$`(f: Fields): string =
+  case f.len
+  of 0: ""
+  else:
+    var r = $f[0]
+    for v in f[1..high(f)]:
+      r = r & ", " & $v
+    r
+
 ####################################################################################################
 # Struct
 
@@ -54,3 +83,7 @@ proc struct*(name: string, fields: Fields): Struct =
 
 proc `==`*(x, y: Struct): bool =
   x.name == y.name and x.fields == y.fields
+
+proc `$`*(s: Struct): string =
+  s.name & "(" & $(s.fields) & ")"
+  
