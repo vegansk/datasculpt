@@ -1,7 +1,9 @@
-import unittest
-import datasculpt/dsl
+import unittest, fp/option
+import datasculpt/dsl, datasculpt/model
 
-defStruct TestData:
+let r = newRepository()
+
+defStruct r, TestData:
   x: int
   `type`: string
   ## `x` is `x`
@@ -11,4 +13,4 @@ defStruct TestData:
 suite "DSL":
 
   test "Basic":
-    discard
+    echo r

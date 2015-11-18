@@ -13,6 +13,7 @@ type
       param*: Type
   Field* = ref object
     name*: string
+    desc*: Option[string]
     `type`*: Type
   Fields* = seq[Field]
   Struct* = ref object
@@ -50,9 +51,13 @@ proc `$`*(t: Type): string =
 ####################################################################################################
 # Field
 
+proc field*(name: string, desc: Option[string], `type`: Type): Field =
+  ## Creates field with `name`, `desc` and `type`
+  Field(name: name, desc: desc, `type`: `type`)
+
 proc field*(name: string, `type`: Type): Field =
   ## Creates field with `name` and `type`
-  Field(name: name, `type`: `type`)
+  Field(name: name, desc: "".none, `type`: `type`)
 
 proc `==`*(x, y: Field): bool =
   x.name == y.name and x.`type` == y.`type`
