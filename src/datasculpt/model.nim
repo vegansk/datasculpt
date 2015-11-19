@@ -3,7 +3,8 @@ import sequtils, tables, fp/option
 type
   TypeKind* = enum
     tkSimple,
-    tkComposite
+    tkComposite,
+    tkStruct
   Type* = ref object
     name*: string
     case kind*: TypeKind
@@ -11,42 +12,20 @@ type
       discard
     of tkComposite:
       param*: Type
+    of tkStruct:
+      fields*: Fields
   Field* = ref object
     name*: string
     desc*: Option[string]
     `type`*: Type
   Fields* = seq[Field]
-  Struct* = ref object
-    name*: string
-    fields*: Fields
-  RepositoryObj = Table[string, Struct]
-  Repository* = ref RepositoryObj
+  Repository* = ref Table[string, Type]
 
 ####################################################################################################
-# Type
+# Forward declarations
 
-proc simpleType*(name: string): Type =
-  ## Creates simple type
-  Type(name: name, kind: tkSimple)
-
-proc complexType*(name: string, param: Type): Type =
-  ## Creates complex type
-  Type(name: name, kind: tkComposite, param: param)
-
-proc `==`*(x,  y: Type): bool =
-  if x.name != y.name:
-     false
-  elif x.kind == y.kind and x.kind == tkComposite:
-    x.param == y.param
-  else:
-    x.kind == y.kind
-
-proc `$`*(t: Type): string =
-  case t.kind
-  of tkSimple:
-    t.name
-  of tkComposite:
-    t.name & "[" & $t.param & "]"
+proc `==`*(x,  y: Type): bool
+proc `$`*(t: Type): string
 
 ####################################################################################################
 # Field
@@ -83,30 +62,54 @@ proc `$`(f: Fields): string =
     r
 
 ####################################################################################################
-# Struct
+# Type
 
-proc struct*(name: string, fields: Fields): Struct =
-  Struct(name: name, fields: fields)
+proc simpleType*(name: string): Type =
+  ## Creates simple type
+  Type(name: name, kind: tkSimple)
 
-proc `==`*(x, y: Struct): bool =
-  x.name == y.name and x.fields == y.fields
+proc complexType*(name: string, param: Type): Type =
+  ## Creates complex type
+  Type(name: name, kind: tkComposite, param: param)
 
-proc `$`*(s: Struct): string =
-  s.name & "(" & $(s.fields) & ")"
-  
+proc struct*(name: string, fields: Fields): Type =
+  Type(name: name, kind: tkStruct, fields: fields)
+
+proc `==`*(x,  y: Type): bool =
+  if x.kind != y.kind or x.name != y.name:
+    false
+  else:
+    case x.kind
+    of tkSimple:
+      true
+    of tkComposite:
+      x.param == y.param
+    of tkStruct:
+      x.fields == y.fields
+
+proc `$`*(t: Type): string =
+  case t.kind
+  of tkSimple:
+    t.name
+  of tkComposite:
+    t.name & "[" & $t.param & "]"
+  of tkStruct:
+    t.name & "(" & $(t.fields) & ")"
+    
+
 ####################################################################################################
 # Repository
 
 proc newRepository*(): Repository =
   new result
-  result[] = initTable[string, Struct]()
+  result[] = initTable[string, Type]()
 
-proc add*(r: Repository, s: Struct): Repository {.discardable.}=
-  r[s.name] = s
+proc add*(r: Repository, t: Type): Repository {.discardable.}=
+  r[t.name] = t
   r
 
-proc get*(r: Repository, name: string): Option[Struct] =
-  if r.hasKey name: r[name].some else: Struct.none
+proc get*(r: Repository, name: string): Option[Type] =
+  if r.hasKey name: r[name].some else: Type.none
 
 proc `$`*(r: Repository): string =
   $(r[])

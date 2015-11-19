@@ -16,7 +16,7 @@ suite "Model":
     check:
       struct("TestStruct",
              @[field("x", simpleType"int"), field("y", complexType("seq", simpleType"int"))]
-      ) == Struct(name: "TestStruct",
+      ) == Type(name: "TestStruct", kind: tkStruct,
                   fields: @[field("x", simpleType"int"), field("y", complexType("seq", simpleType"int"))]
       )
 
