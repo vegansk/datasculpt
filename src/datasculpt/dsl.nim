@@ -1,4 +1,4 @@
-import macros, model, future, fp/option
+import macros, model, future, fp.option, strutils, sequtils
 
 proc parseType(t: expr): string
 
@@ -36,9 +36,13 @@ proc parseField(f: expr, comm: Option[string]): string =
   result = "field(\"" & $i & "\", " & c & ", " & parseType(f[1]) & ")"
 
 proc parseComment(c: NimNode): Option[string] =
-  # TODO: Read the comments from the source
-  # http://forum.nim-lang.org/t/1808
-  "TODO: Read the comments from the source".some
+  # TODO: Find out what the f... with Option.map in macros and fix multiline comments
+  # c.strVal.some.notEmpty.map(v => strip(v[2..^0]))
+  let comm = c.strVal.strip
+  if comm != "":
+    comm.split("\n").mapIt(it[2..^0].strip).join("\n").some
+  else:
+    comm.none
 
 proc parseStruct(name: expr, body: NimNode): string =
   expectKind body, nnkStmtList
