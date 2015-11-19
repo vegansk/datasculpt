@@ -37,13 +37,7 @@ proc parseField(f: expr, comm: Option[string]): string =
   result = "field(\"" & $i & "\", " & c & ", " & parseType(f[1]) & ")"
 
 proc parseComment(c: NimNode): Option[string] =
-  # TODO: Wait for https://github.com/nim-lang/Nim/issues/3561 and fix it
-  # c.strVal.some.notEmpty.map(v => split("\n").mapIt(strip(it[2..^0])).join("\n"))
-  let comm = c.strVal.strip
-  if comm != "":
-    comm.split("\n").mapIt(it[2..^0].strip).join("\n").some
-  else:
-    comm.none
+  c.strVal.strip.some.notEmpty
 
 proc parseStruct(name: expr, body: NimNode): string =
   expectKind body, nnkStmtList
