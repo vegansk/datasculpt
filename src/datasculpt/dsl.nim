@@ -28,6 +28,7 @@ proc parseField(f: expr, comm: Option[string]): string =
   expectKind f[0], {nnkIdent, nnkAccQuoted}
   
   # TODO: Fix commented line and delete ugly transform
+  # I think it's about https://github.com/nim-lang/Nim/issues/3561
   # let c = comm.map(v => ("\"$1\".some"%v)).getOrElse("string.none")
   let c = if comm.isDefined: "\"" & comm.getOrElse("") & "\".some" else: "string.none"
 
@@ -36,8 +37,8 @@ proc parseField(f: expr, comm: Option[string]): string =
   result = "field(\"" & $i & "\", " & c & ", " & parseType(f[1]) & ")"
 
 proc parseComment(c: NimNode): Option[string] =
-  # TODO: Find out what the f... with Option.map in macros and fix multiline comments
-  # c.strVal.some.notEmpty.map(v => strip(v[2..^0]))
+  # TODO: Wait for https://github.com/nim-lang/Nim/issues/3561 and fix it
+  # c.strVal.some.notEmpty.map(v => split("\n").mapIt(strip(it[2..^0])).join("\n"))
   let comm = c.strVal.strip
   if comm != "":
     comm.split("\n").mapIt(it[2..^0].strip).join("\n").some
