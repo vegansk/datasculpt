@@ -5,6 +5,7 @@ author        = "Anatoly Galiulin <galiulin.anatoly@gmail.com>"
 description   = "Data structure description language"
 license       = "MIT"
 srcdir        = "src"
+bin           = "dsculpt"
 
 requires "nim >= 0.12.1", "https://github.com/vegansk/nimfp#master"
 
