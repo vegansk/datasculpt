@@ -5,7 +5,7 @@ author        = "Anatoly Galiulin <galiulin.anatoly@gmail.com>"
 description   = "Data structure description language"
 license       = "MIT"
 srcdir        = "src"
-bin           = "dsculpt"
+bin           = @["dsculpt"]
 
 requires "nim >= 0.12.1", "https://github.com/vegansk/nimfp#master"
 
@@ -44,3 +44,6 @@ task dsl, "Run dsl tests":
 
 task model, "Run model tests":
   test "model"
+
+task install, "Install datasculpt using nimble":
+ exec "nimble install -y"
