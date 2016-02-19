@@ -7,7 +7,7 @@ license       = "MIT"
 srcdir        = "src"
 bin           = @["dsculpt"]
 
-requires "nim >= 0.12.1", "https://github.com/vegansk/nimfp#master"
+requires "nim >= 0.13.1", "nimfp >= 0.0.2"
 
 proc buildBase(debug = true, bin: string, src: string) =
   switch("out", (thisDir() & "/" & bin).toExe)
