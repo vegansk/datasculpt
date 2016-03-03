@@ -4,12 +4,22 @@ import macros
 dumpTree:
   defType BaseObject, inheritable, immutable, inherits BaseBaseObject:
     strField string, notEmpty, minLen 5, maxLen 100, (dbField notNull, maxLen 200), desc "This is a string field"
+    strField2 string:
+       notEmpty,
+       minLen 5,
+       maxLen 100,
+       (dbField notNull, maxLen 200),
+       desc "This is a string field"
     strAnotherField:
       string
       dbField: notNull; maxLen(200); linkedTo(AnotherObject.someField)
     optionField: Option[string]
         .desc("One more field")
-        .notEmpty() 
+        .notEmpty()
+        .dbField(
+          notNull()
+          .maxLen(200)
+        )
         .minLen(5)
         .maxLen(100)
 
