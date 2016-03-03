@@ -1,3 +1,3 @@
-import unittest
+import unittest, datasculpt.dsl
 
 echo "OK"
